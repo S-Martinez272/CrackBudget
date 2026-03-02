@@ -1,0 +1,4 @@
+git clone https://github.com/S-Martinez272/CrackBudget.git 
+cd CrackBudget 
+npm install 
+npm run dev
