@@ -1,4 +1,18 @@
+Start working:
+
 git clone https://github.com/S-Martinez272/CrackBudget.git 
 cd CrackBudget 
 npm install 
+npm run dev
+
+
+Before working:
+git pull
+
+After working:
+git add .
+git commit -m "describe what you changed."
+git push
+
+If u lose connection:
 npm run dev
