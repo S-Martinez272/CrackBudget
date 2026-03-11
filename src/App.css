@@ -40,3 +40,40 @@
 .read-the-docs {
   color: #888;
 }
+
+.empty-card span {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.empty-chart-state {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #1f2937;
+  text-align: center;
+}
+
+.empty-chart-circle {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 18px dashed rgba(255, 255, 255, 0.45);
+  margin-bottom: 20px;
+}
+
+.empty-chart-state p {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.empty-chart-state span {
+  max-width: 420px;
+  color: #374151;
+  font-size: 0.95rem;
+}
