@@ -1,3 +1,5 @@
+//there are lots of placeholders in here rn, so it is just waiting for when we add in the user input features. 
+
 function Dashboard({ user }) {
   return (
     <div className="dashboard-page">
@@ -5,7 +7,7 @@ function Dashboard({ user }) {
         <div className="brand-section">
           <h2 className="brand-name">Rowan Budget Companion</h2>
           <p className="brand-email">
-            {user?.email ? user.email : "No user signed in"}
+            {user?.email ? user.email : "No user signed in"} 
           </p>
         </div>
 
@@ -13,7 +15,6 @@ function Dashboard({ user }) {
           <button className="nav-item active">Dashboard</button>
           <button className="nav-item">Budget</button>
           <button className="nav-item">Reports</button>
-          <button className="nav-item">All Accounts</button>
         </nav>
       </aside>
 
@@ -49,7 +50,7 @@ function Dashboard({ user }) {
           <div className="empty-chart-state">
             <div className="empty-chart-circle"></div>
             <p>No spending data yet</p>
-            <span>Once the user adds categories and expenses, the chart can appear here.</span>
+            <span>Once the user adds categories and expenses, the chart can appear here.</span> 
           </div>
         </section>
       </main>
