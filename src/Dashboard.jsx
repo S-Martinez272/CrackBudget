@@ -15,6 +15,11 @@ function Dashboard({ user }) {
           <button className="nav-item active">Dashboard</button>
           <button className="nav-item">Budget</button>
           <button className="nav-item">Reports</button>
+
+        <nav className="nav-dropdown-wrapper">
+          <button className="nav-item">Expense Accounts</button>
+          </nav>
+          <button className="nav-item">Settings</button>
         </nav>
       </aside>
 

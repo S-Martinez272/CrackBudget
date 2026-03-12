@@ -56,6 +56,13 @@ function Login({ onLoginSuccess, onForgotPassword }) { //added this so App can s
           Forgot Password?
         </button>
       </p>
+      
+      <p>
+        {" Don't have an account? "}
+         <button type="button" onClick={onGoToCreateAccount}>
+          Create Account
+        </button>
+      </p>
     </div>
   );
 }
