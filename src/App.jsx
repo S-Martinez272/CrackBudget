@@ -9,26 +9,33 @@ import Dashboard from "./Dashboard";
 import "./App.css";
 
 function App() {
+  const [loggedInUser, setLoggedInUser] = useState(null);
   const [showForgot, setShowForgot] = useState(false);
   const [showCreateAccount, setShowCreateAccount] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(true);
+
+  if (loggedInUser) {
+    return <Dashboard user={loggedInUser} />;
+  }
+
+  if (showCreateAccount) {
+    return (
+      <CreateAccount
+        onCreateAccountSuccess={setLoggedInUser}
+        onBackToLogin={() => setShowCreateAccount(false)}
+      />
+    );
+  }
+
+  if (showForgot) {
+    return <ForgotPassword onBackToLogin={() => setShowForgot(false)} />;
+  }
 
   return (
-    <div>
-      {loggedInUser ? (
-        <Dashboard user={loggedInUser} />
-      ) : showCreateAccount ? (
-        <CreateAccount onCreateAccountSuccess={(user) => setLoggedInUser(user)} onBackToLogin={() => setShowCreateAccount(true)} />
-      ) : showForgot ? (
-        <ForgotPassword onBackToLogin={() => setShowForgot(false)} />
-      ) : (
-        <Login
-          onLoginSuccess={(user) => setLoggedInUser(user)}
-          onForgotPassword={() => setShowForgot(true)}
-          onGoToCreateAccount={() => setShowCreateAccount(true)}
-        />
-      )}
-    </div>
+    <Login
+      onLoginSuccess={setLoggedInUser}
+      onForgotPassword={() => setShowForgot(true)}
+      onGoToCreateAccount={() => setShowCreateAccount(true)}
+    />
   );
 }
 
