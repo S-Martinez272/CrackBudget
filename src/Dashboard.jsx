@@ -13,6 +13,8 @@ function Dashboard({ user }) {
   const [amount, setAmount] = useState("");
   const [selectedView, setSelectedView] = useState("monthly");
 
+  const [InfoTab, setInfoTab] = useState("dashboard");
+
   const activeExpenses =
     viewMode === "monthly" ? monthlyExpenses : semesterExpenses;
 
@@ -76,6 +78,7 @@ function Dashboard({ user }) {
           <button className="nav-item active">Dashboard</button>
           <button className="nav-item">Budget</button>
           <button className="nav-item">Reports</button>
+          <button className="nav-item">Settings</button>
           <button className="nav-item">All Accounts</button>
         </nav>
       </aside>
@@ -169,30 +172,51 @@ function Dashboard({ user }) {
           <div className="summary-card">
             <div className="card-header">
               <h3>Income</h3>
-              <button className="info-btn" title="Total income for the selected view">
-                i
-              </button>
-            </div>
+              <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('income')}
+                  onMouseLeave={() => setShowInfoTab(null)}
+                  >
+              <button className="info-btn" >i</button>
+              {InfoTab === 'income' && (
+                <div className="info-popup">Total income for the selected view</div>
+              )}
+          /</div>
+          </div>
             <p>${activeIncome.toLocaleString()}</p>
           </div>
 
           <div className="summary-card">
             <div className="card-header">
               <h3>Expenses</h3>
-              <button className="info-btn" title="Total expenses for the selected view">
-                i
-              </button>
-            </div>
+              <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('expenses')}
+                  onMouseLeave={() => setShowInfoTab(null)}
+                  >
+              <button className="info-btn" >i</button>
+              {InfoTab === 'expenses' && (
+                <div className="info-popup">Total expenses for selected view</div>
+              )}
+          /</div>
+          </div>
             <p>${totalExpenses.toLocaleString()}</p>
           </div>
 
           <div className="summary-card">
             <div className="card-header">
               <h3>Net</h3>
-              <button className="info-btn" title="Income minus expenses">
-                i
-              </button>
-            </div>
+              <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('net')}
+                  onMouseLeave={() => setShowInfoTab(null)}
+                  >
+              <button className="info-btn" >i</button>
+              {InfoTab === 'net' && (
+                <div className="info-popup">Net = Income - Expenses</div>
+              )}
+          /</div>
+          </div>
             <p>${net.toLocaleString()}</p>
           </div>
         </section>
