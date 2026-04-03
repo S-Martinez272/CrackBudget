@@ -1,7 +1,9 @@
 import { useState } from "react";
+import RowanResources from "./RowanResources";
 
 function Dashboard({ user }) {
   const [viewMode, setViewMode] = useState("monthly");
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [semesterIncome, setSemesterIncome] = useState("");
@@ -73,173 +75,176 @@ function Dashboard({ user }) {
         </div>
 
         <nav className="sidebar-nav">
-          <button className="nav-item active">Dashboard</button>
-          <button className="nav-item">Budget</button>
-          <button className="nav-item">Reports</button>
-          <button className="nav-item">All Accounts</button>
+          <button
+            className={activeTab === "dashboard" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button
+            className={activeTab === "whatif" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("whatif")}
+          >
+            What-if?
+          </button>
+
+          <button
+            className={activeTab === "resources" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("resources")}
+          >
+            Rowan Resources
+          </button>
+
+          <button
+            className={activeTab === "settings" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("settings")}
+          >
+            Settings
+          </button>
         </nav>
       </aside>
 
       <main className="dashboard-main">
-        <div className="dashboard-topbar">
-          <div className="dashboard-header">
-            <h1>Budget Summary</h1>
-            <p>Track your budget by month or semester.</p>
-          </div>
+        {/* DASHBOARD VIEW */}
+        {activeTab === "dashboard" && (
+          <>
+            <div className="dashboard-topbar">
+              <div className="dashboard-header">
+                <h1>Budget Summary</h1>
+                <p>Track your budget by month or semester.</p>
+              </div>
 
-          <div className="toggle-group">
-            <button
-              className={viewMode === "monthly" ? "toggle-btn active-toggle" : "toggle-btn"}
-              onClick={() => setViewMode("monthly")}
-            >
-              Monthly
-            </button>
-            <button
-              className={viewMode === "semester" ? "toggle-btn active-toggle" : "toggle-btn"}
-              onClick={() => setViewMode("semester")}
-            >
-              Semester
-            </button>
-          </div>
-        </div>
-
-        <section className="input-section">
-          <div className="input-card">
-            <h3>Set Income</h3>
-
-            <label className="input-label">Monthly Income</label>
-            <input
-              type="number"
-              placeholder="Enter monthly income"
-              value={monthlyIncome}
-              onChange={(e) => setMonthlyIncome(e.target.value)}
-              className="dashboard-input"
-            />
-
-            <label className="input-label">Semester Income</label>
-            <input
-              type="number"
-              placeholder="Enter semester income"
-              value={semesterIncome}
-              onChange={(e) => setSemesterIncome(e.target.value)}
-              className="dashboard-input"
-            />
-          </div>
-
-          <div className="input-card">
-            <h3>Add Expense</h3>
-
-            <form onSubmit={handleAddExpense} className="expense-form">
-              <label className="input-label">Apply To</label>
-              <select
-                value={selectedView}
-                onChange={(e) => setSelectedView(e.target.value)}
-                className="dashboard-input"
-              >
-                <option value="monthly">Monthly</option>
-                <option value="semester">Semester</option>
-              </select>
-
-              <label className="input-label">Expense Category</label>
-              <input
-                type="text"
-                placeholder="Ex. Groceries"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="dashboard-input"
-              />
-
-              <label className="input-label">Amount</label>
-              <input
-                type="number"
-                placeholder="Ex. 120"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="dashboard-input"
-              />
-
-              <button type="submit" className="save-btn">
-                Add Expense
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <section className="summary-grid">
-          <div className="summary-card">
-            <div className="card-header">
-              <h3>Income</h3>
-              <button className="info-btn" title="Total income for the selected view">
-                i
-              </button>
-            </div>
-            <p>${activeIncome.toLocaleString()}</p>
-          </div>
-
-          <div className="summary-card">
-            <div className="card-header">
-              <h3>Expenses</h3>
-              <button className="info-btn" title="Total expenses for the selected view">
-                i
-              </button>
-            </div>
-            <p>${totalExpenses.toLocaleString()}</p>
-          </div>
-
-          <div className="summary-card">
-            <div className="card-header">
-              <h3>Net</h3>
-              <button className="info-btn" title="Income minus expenses">
-                i
-              </button>
-            </div>
-            <p>${net.toLocaleString()}</p>
-          </div>
-        </section>
-
-        <section className="chart-card">
-          <div className="chart-header">
-            <h2>Expense Breakdown</h2>
-            <span>{viewMode === "monthly" ? "Monthly View" : "Semester View"}</span>
-          </div>
-
-          <div className="chart-content">
-            <div className="fake-chart" style={chartStyle}>
-              <div className="chart-hole">
-                <span>
-                  {totalExpenses > 0
-                    ? `$${totalExpenses.toLocaleString()}`
-                    : "No Data"}
-                </span>
+              <div className="toggle-group">
+                <button
+                  className={viewMode === "monthly" ? "toggle-btn active-toggle" : "toggle-btn"}
+                  onClick={() => setViewMode("monthly")}
+                >
+                  Monthly
+                </button>
+                <button
+                  className={viewMode === "semester" ? "toggle-btn active-toggle" : "toggle-btn"}
+                  onClick={() => setViewMode("semester")}
+                >
+                  Semester
+                </button>
               </div>
             </div>
 
-            <div className="chart-labels">
-              {activeExpenses.length === 0 ? (
-                <p>No expenses added yet.</p>
-              ) : (
-                activeExpenses.map((expense, index) => {
-                  const percentage = ((expense.amount / totalExpenses) * 100).toFixed(1);
+            <section className="input-section">
+              <div className="input-card">
+                <h3>Set Income</h3>
 
-                  return (
-                    <div key={index} className="chart-label-item">
-                      <div className="label-left">
-                        <span
-                          className="color-dot"
-                          style={{ backgroundColor: expense.color }}
-                        ></span>
-                        <span>{expense.name}</span>
-                      </div>
-                      <span>
-                        ${expense.amount} ({percentage}%)
-                      </span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        </section>
+                <label className="input-label">Monthly Income</label>
+                <input
+                  type="number"
+                  placeholder="Enter monthly income"
+                  value={monthlyIncome}
+                  onChange={(e) => setMonthlyIncome(e.target.value)}
+                  className="dashboard-input"
+                />
+
+                <label className="input-label">Semester Income</label>
+                <input
+                  type="number"
+                  placeholder="Enter semester income"
+                  value={semesterIncome}
+                  onChange={(e) => setSemesterIncome(e.target.value)}
+                  className="dashboard-input"
+                />
+              </div>
+
+              <div className="input-card">
+                <h3>Add Expense</h3>
+
+                <form onSubmit={handleAddExpense} className="expense-form">
+                  <label className="input-label">Apply To</label>
+                  <select
+                    value={selectedView}
+                    onChange={(e) => setSelectedView(e.target.value)}
+                    className="dashboard-input"
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="semester">Semester</option>
+                  </select>
+
+                  <label className="input-label">Expense Category</label>
+                  <input
+                    type="text"
+                    placeholder="Ex. Groceries"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="dashboard-input"
+                  />
+
+                  <label className="input-label">Amount</label>
+                  <input
+                    type="number"
+                    placeholder="Ex. 120"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="dashboard-input"
+                  />
+
+                  <button type="submit" className="save-btn">
+                    Add Expense
+                  </button>
+                </form>
+              </div>
+            </section>
+
+            <section className="summary-grid">
+              <div className="summary-card">
+                <h3>Income</h3>
+                <p>${activeIncome.toLocaleString()}</p>
+              </div>
+
+              <div className="summary-card">
+                <h3>Expenses</h3>
+                <p>${totalExpenses.toLocaleString()}</p>
+              </div>
+
+              <div className="summary-card">
+                <h3>Net</h3>
+                <p>${net.toLocaleString()}</p>
+              </div>
+            </section>
+
+            <section className="chart-card">
+              <h2>Expense Breakdown</h2>
+
+              <div className="chart-content">
+                <div className="fake-chart" style={chartStyle}></div>
+
+                <div className="chart-labels">
+                  {activeExpenses.length === 0 ? (
+                    <p>No expenses added yet.</p>
+                  ) : (
+                    activeExpenses.map((expense, index) => {
+                      const percentage = ((expense.amount / totalExpenses) * 100).toFixed(1);
+
+                      return (
+                        <div key={index} className="chart-label-item">
+                          <span>{expense.name}</span>
+                          <span>
+                            ${expense.amount} ({percentage}%)
+                          </span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {/* RESOURCES TAB */}
+        {activeTab === "resources" && <RowanResources />}
+
+        {/* OTHER TABS */}
+        {activeTab === "whatif" && <div className="chart-card">What-if coming soon</div>}
+        {activeTab === "settings" && <div className="chart-card">Settings coming soon</div>}
       </main>
     </div>
   );
