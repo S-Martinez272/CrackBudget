@@ -1,5 +1,9 @@
+// Dashboard.jsx
+// Authors: Sophia, Ellie, Scout
+
 import { useState } from "react";
 import RowanResources from "./RowanResources";
+import WhatIf from "./WhatIf";
 
 function Dashboard({ user }) {
   const [viewMode, setViewMode] = useState("monthly");
@@ -85,6 +89,13 @@ function Dashboard({ user }) {
           </button>
 
           <button
+            className={activeTab === "whatif" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("whatif")}
+          >
+            What If
+          </button>
+
+          <button
             className={activeTab === "budget" ? "nav-item active" : "nav-item"}
             onClick={() => setActiveTab("budget")}
           >
@@ -122,6 +133,9 @@ function Dashboard({ user }) {
       </aside>
 
       <main className="dashboard-main">
+        
+        {activeTab === "whatif" && <WhatIf />}
+
         {(activeTab === "dashboard" || activeTab === "budget") && (
           <>
             <div className="dashboard-topbar">
@@ -153,6 +167,7 @@ function Dashboard({ user }) {
                 </button>
               </div>
             </div>
+
 
             <section className="input-section">
               <div className="input-card">
@@ -218,140 +233,33 @@ function Dashboard({ user }) {
 
             <section className="summary-grid">
               <div className="summary-card">
-                <div className="card-header">
-                  <h3>Income</h3>
-                  <div
-                    className="info-tab"
-                    onMouseEnter={() => setInfoTab("income")}
-                    onMouseLeave={() => setInfoTab(null)}
-                  >
-                    <button className="info-btn">i</button>
-                    {infoTab === "income" && (
-                      <div className="info-popup">
-                        Total income for the selected view
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <h3>Income</h3>
                 <p>${activeIncome.toLocaleString()}</p>
               </div>
 
               <div className="summary-card">
-                <div className="card-header">
-                  <h3>Expenses</h3>
-                  <div
-                    className="info-tab"
-                    onMouseEnter={() => setInfoTab("expenses")}
-                    onMouseLeave={() => setInfoTab(null)}
-                  >
-                    <button className="info-btn">i</button>
-                    {infoTab === "expenses" && (
-                      <div className="info-popup">
-                        Total expenses for selected view
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <h3>Expenses</h3>
                 <p>${totalExpenses.toLocaleString()}</p>
               </div>
 
               <div className="summary-card">
-                <div className="card-header">
-                  <h3>Net</h3>
-                  <div
-                    className="info-tab"
-                    onMouseEnter={() => setInfoTab("net")}
-                    onMouseLeave={() => setInfoTab(null)}
-                  >
-                    <button className="info-btn">i</button>
-                    {infoTab === "net" && (
-                      <div className="info-popup">Net = Income - Expenses</div>
-                    )}
-                  </div>
-                </div>
+                <h3>Net</h3>
                 <p>${net.toLocaleString()}</p>
               </div>
             </section>
 
             <section className="chart-card">
-              <div className="chart-header">
-                <h2>Expense Breakdown</h2>
-                <span>
-                  {viewMode === "monthly" ? "Monthly View" : "Semester View"}
-                </span>
-              </div>
-
-              <div className="chart-content">
-                <div className="fake-chart" style={chartStyle}>
-                  <div className="chart-hole">
-                    <span>
-                      {totalExpenses > 0
-                        ? `$${totalExpenses.toLocaleString()}`
-                        : "No Data"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="chart-labels">
-                  {activeExpenses.length === 0 ? (
-                    <p>No expenses added yet.</p>
-                  ) : (
-                    activeExpenses.map((expense, index) => {
-                      const percentage = (
-                        (expense.amount / totalExpenses) *
-                        100
-                      ).toFixed(1);
-
-                      return (
-                        <div key={index} className="chart-label-item">
-                          <div className="label-left">
-                            <span
-                              className="color-dot"
-                              style={{ backgroundColor: expense.color }}
-                            ></span>
-                            <span>{expense.name}</span>
-                          </div>
-                          <span>
-                            ${expense.amount} ({percentage}%)
-                          </span>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
+              <h2>Expense Breakdown</h2>
+              <div className="fake-chart" style={chartStyle}></div>
             </section>
           </>
         )}
 
         {activeTab === "resources" && <RowanResources />}
 
-        {activeTab === "reports" && (
-          <div className="chart-card">
-            <div className="chart-header">
-              <h2>Reports</h2>
-            </div>
-            <p>This section is still being worked on.</p>
-          </div>
-        )}
-
-        {activeTab === "settings" && (
-          <div className="chart-card">
-            <div className="chart-header">
-              <h2>Settings</h2>
-            </div>
-            <p>This section is still being worked on.</p>
-          </div>
-        )}
-
-        {activeTab === "accounts" && (
-          <div className="chart-card">
-            <div className="chart-header">
-              <h2>All Accounts</h2>
-            </div>
-            <p>This section is still being worked on.</p>
-          </div>
-        )}
+        {activeTab === "reports" && <p>Reports coming soon</p>}
+        {activeTab === "settings" && <p>Settings coming soon</p>}
+        {activeTab === "accounts" && <p>Accounts coming soon</p>}
       </main>
     </div>
   );
@@ -359,7 +267,6 @@ function Dashboard({ user }) {
 
 function buildChartSegments(data, total) {
   let currentPercent = 0;
-
   return data
     .map((expense) => {
       const start = currentPercent;
@@ -372,16 +279,7 @@ function buildChartSegments(data, total) {
 }
 
 function getColor(category) {
-  const colors = [
-    "#c97d3d",
-    "#927700",
-    "#ead7b1",
-    "#6e9457",
-    "#eed252",
-    "#575757",
-    "#4f7cac",
-    "#b56576",
-  ];
+  const colors = ["#c97d3d", "#927700", "#ead7b1", "#6e9457"];
 
   let total = 0;
   for (let i = 0; i < category.length; i++) {
