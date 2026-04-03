@@ -166,7 +166,7 @@ body {
 }
 
 .active-toggle {
-  background: #ffffff;
+  background: #f0dbc0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -376,4 +376,41 @@ body {
   max-width: 420px;
   color: #374151;
   font-size: 0.95rem;
+}
+/* Container to keep the bubble anchored to the button */
+.info-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The pop-up bubble styling */
+.info-popup {
+  position: absolute;
+  bottom: 130%; /* Positions it directly above the 'i' button */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none; /* Prevents the bubble itself from interfering with the mouse */
+}
+
+/* Small downward triangle arrow at the bottom of the bubble */
+.info-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: 6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #1f2937 transparent transparent transparent;
 }

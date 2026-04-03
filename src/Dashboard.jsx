@@ -3,7 +3,6 @@ import RowanResources from "./RowanResources";
 
 function Dashboard({ user }) {
   const [viewMode, setViewMode] = useState("monthly");
-  const [activeTab, setActiveTab] = useState("dashboard");
 
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [semesterIncome, setSemesterIncome] = useState("");
@@ -14,6 +13,9 @@ function Dashboard({ user }) {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedView, setSelectedView] = useState("monthly");
+
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [infoTab, setInfoTab] = useState(null);
 
   const activeExpenses =
     viewMode === "monthly" ? monthlyExpenses : semesterExpenses;
@@ -83,10 +85,10 @@ function Dashboard({ user }) {
           </button>
 
           <button
-            className={activeTab === "whatif" ? "nav-item active" : "nav-item"}
-            onClick={() => setActiveTab("whatif")}
+            className={activeTab === "budget" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("budget")}
           >
-            What-if?
+            Budget
           </button>
 
           <button
@@ -97,17 +99,30 @@ function Dashboard({ user }) {
           </button>
 
           <button
+            className={activeTab === "reports" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("reports")}
+          >
+            Reports
+          </button>
+
+          <button
             className={activeTab === "settings" ? "nav-item active" : "nav-item"}
             onClick={() => setActiveTab("settings")}
           >
             Settings
           </button>
+
+          <button
+            className={activeTab === "accounts" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("accounts")}
+          >
+            All Accounts
+          </button>
         </nav>
       </aside>
 
       <main className="dashboard-main">
-        {/* DASHBOARD VIEW */}
-        {activeTab === "dashboard" && (
+        {(activeTab === "dashboard" || activeTab === "budget") && (
           <>
             <div className="dashboard-topbar">
               <div className="dashboard-header">
@@ -117,13 +132,21 @@ function Dashboard({ user }) {
 
               <div className="toggle-group">
                 <button
-                  className={viewMode === "monthly" ? "toggle-btn active-toggle" : "toggle-btn"}
+                  className={
+                    viewMode === "monthly"
+                      ? "toggle-btn active-toggle"
+                      : "toggle-btn"
+                  }
                   onClick={() => setViewMode("monthly")}
                 >
                   Monthly
                 </button>
                 <button
-                  className={viewMode === "semester" ? "toggle-btn active-toggle" : "toggle-btn"}
+                  className={
+                    viewMode === "semester"
+                      ? "toggle-btn active-toggle"
+                      : "toggle-btn"
+                  }
                   onClick={() => setViewMode("semester")}
                 >
                   Semester
@@ -195,37 +218,99 @@ function Dashboard({ user }) {
 
             <section className="summary-grid">
               <div className="summary-card">
-                <h3>Income</h3>
+                <div className="card-header">
+                  <h3>Income</h3>
+                  <div
+                    className="info-tab"
+                    onMouseEnter={() => setInfoTab("income")}
+                    onMouseLeave={() => setInfoTab(null)}
+                  >
+                    <button className="info-btn">i</button>
+                    {infoTab === "income" && (
+                      <div className="info-popup">
+                        Total income for the selected view
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <p>${activeIncome.toLocaleString()}</p>
               </div>
 
               <div className="summary-card">
-                <h3>Expenses</h3>
+                <div className="card-header">
+                  <h3>Expenses</h3>
+                  <div
+                    className="info-tab"
+                    onMouseEnter={() => setInfoTab("expenses")}
+                    onMouseLeave={() => setInfoTab(null)}
+                  >
+                    <button className="info-btn">i</button>
+                    {infoTab === "expenses" && (
+                      <div className="info-popup">
+                        Total expenses for selected view
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <p>${totalExpenses.toLocaleString()}</p>
               </div>
 
               <div className="summary-card">
-                <h3>Net</h3>
+                <div className="card-header">
+                  <h3>Net</h3>
+                  <div
+                    className="info-tab"
+                    onMouseEnter={() => setInfoTab("net")}
+                    onMouseLeave={() => setInfoTab(null)}
+                  >
+                    <button className="info-btn">i</button>
+                    {infoTab === "net" && (
+                      <div className="info-popup">Net = Income - Expenses</div>
+                    )}
+                  </div>
+                </div>
                 <p>${net.toLocaleString()}</p>
               </div>
             </section>
 
             <section className="chart-card">
-              <h2>Expense Breakdown</h2>
+              <div className="chart-header">
+                <h2>Expense Breakdown</h2>
+                <span>
+                  {viewMode === "monthly" ? "Monthly View" : "Semester View"}
+                </span>
+              </div>
 
               <div className="chart-content">
-                <div className="fake-chart" style={chartStyle}></div>
+                <div className="fake-chart" style={chartStyle}>
+                  <div className="chart-hole">
+                    <span>
+                      {totalExpenses > 0
+                        ? `$${totalExpenses.toLocaleString()}`
+                        : "No Data"}
+                    </span>
+                  </div>
+                </div>
 
                 <div className="chart-labels">
                   {activeExpenses.length === 0 ? (
                     <p>No expenses added yet.</p>
                   ) : (
                     activeExpenses.map((expense, index) => {
-                      const percentage = ((expense.amount / totalExpenses) * 100).toFixed(1);
+                      const percentage = (
+                        (expense.amount / totalExpenses) *
+                        100
+                      ).toFixed(1);
 
                       return (
                         <div key={index} className="chart-label-item">
-                          <span>{expense.name}</span>
+                          <div className="label-left">
+                            <span
+                              className="color-dot"
+                              style={{ backgroundColor: expense.color }}
+                            ></span>
+                            <span>{expense.name}</span>
+                          </div>
                           <span>
                             ${expense.amount} ({percentage}%)
                           </span>
@@ -239,12 +324,34 @@ function Dashboard({ user }) {
           </>
         )}
 
-        {/* RESOURCES TAB */}
         {activeTab === "resources" && <RowanResources />}
 
-        {/* OTHER TABS */}
-        {activeTab === "whatif" && <div className="chart-card">What-if coming soon</div>}
-        {activeTab === "settings" && <div className="chart-card">Settings coming soon</div>}
+        {activeTab === "reports" && (
+          <div className="chart-card">
+            <div className="chart-header">
+              <h2>Reports</h2>
+            </div>
+            <p>This section is still being worked on.</p>
+          </div>
+        )}
+
+        {activeTab === "settings" && (
+          <div className="chart-card">
+            <div className="chart-header">
+              <h2>Settings</h2>
+            </div>
+            <p>This section is still being worked on.</p>
+          </div>
+        )}
+
+        {activeTab === "accounts" && (
+          <div className="chart-card">
+            <div className="chart-header">
+              <h2>All Accounts</h2>
+            </div>
+            <p>This section is still being worked on.</p>
+          </div>
+        )}
       </main>
     </div>
   );
