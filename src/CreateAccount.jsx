@@ -1,29 +1,35 @@
-// Create account section
-
 import { useState } from "react";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; 
 
 function CreateAccount({ onCreateAccountSuccess, onBackToLogin }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-    const handleCreateAccount = async (e) => {
-        e.preventDefault();
-        setError("");
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
+    setError("");
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-            alert("Account created successfully!");
-            onCreateSuccess(userCredential.user);
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        createdAt: new Date()
+      });
 
-        } catch (error) {
+      alert("Account created successfully!");
 
-           alert(error.message);
-        }
-    };
+      onCreateAccountSuccess(user);
+
+    } catch (error) {
+      setError(error.message);
+      alert(error.message);
+    }
+  };
 
   return (
     <div>
@@ -47,16 +53,17 @@ function CreateAccount({ onCreateAccountSuccess, onBackToLogin }) {
 
         <br /><br />
 
-
         <button type="submit">Create Account</button>
       </form>
 
       <p>
         {" Already have an account? "}
-         <button type="button" onClick={onBackToLogin}>
+        <button type="button" onClick={onBackToLogin}>
           Back to Login
         </button>
       </p>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }

@@ -414,3 +414,23 @@ body {
   border-style: solid;
   border-color: #1f2937 transparent transparent transparent;
 }
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.reports-table th,
+.reports-table td {
+  border: 1px solid #d1d5db;
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.reports-table th {
+  background-color: #dfe9d8;
+}

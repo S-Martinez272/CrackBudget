@@ -1,9 +1,9 @@
-// Dashboard.jsx
-// Authors: Sophia, Ellie, Scout
-
 import { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./firebase";
 import RowanResources from "./RowanResources";
 import WhatIf from "./WhatIf";
+import Reports from "./reports";
 
 function Dashboard({ user }) {
   const [viewMode, setViewMode] = useState("monthly");
@@ -19,7 +19,6 @@ function Dashboard({ user }) {
   const [selectedView, setSelectedView] = useState("monthly");
 
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [infoTab, setInfoTab] = useState(null);
 
   const activeExpenses =
     viewMode === "monthly" ? monthlyExpenses : semesterExpenses;
@@ -70,6 +69,30 @@ function Dashboard({ user }) {
 
     setCategory("");
     setAmount("");
+  };
+
+  const handleSaveReport = async () => {
+    if (!user) {
+      alert("You must be logged in to save a report.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "users", user.uid, "reports"), {
+        viewMode: viewMode,
+        income: activeIncome,
+        totalExpenses: totalExpenses,
+        net: net,
+        expenses: activeExpenses,
+        createdAt: new Date(),
+      });
+
+      alert("Report saved successfully!");
+      setActiveTab("reports");
+    } catch (error) {
+      console.log("Error saving report:", error);
+      alert("Error saving report.");
+    }
   };
 
   return (
@@ -133,7 +156,6 @@ function Dashboard({ user }) {
       </aside>
 
       <main className="dashboard-main">
-        
         {activeTab === "whatif" && <WhatIf />}
 
         {(activeTab === "dashboard" || activeTab === "budget") && (
@@ -146,28 +168,19 @@ function Dashboard({ user }) {
 
               <div className="toggle-group">
                 <button
-                  className={
-                    viewMode === "monthly"
-                      ? "toggle-btn active-toggle"
-                      : "toggle-btn"
-                  }
+                  className={viewMode === "monthly" ? "toggle-btn active-toggle" : "toggle-btn"}
                   onClick={() => setViewMode("monthly")}
                 >
                   Monthly
                 </button>
                 <button
-                  className={
-                    viewMode === "semester"
-                      ? "toggle-btn active-toggle"
-                      : "toggle-btn"
-                  }
+                  className={viewMode === "semester" ? "toggle-btn active-toggle" : "toggle-btn"}
                   onClick={() => setViewMode("semester")}
                 >
                   Semester
                 </button>
               </div>
             </div>
-
 
             <section className="input-section">
               <div className="input-card">
@@ -249,15 +262,59 @@ function Dashboard({ user }) {
             </section>
 
             <section className="chart-card">
-              <h2>Expense Breakdown</h2>
-              <div className="fake-chart" style={chartStyle}></div>
+              <div className="chart-header">
+                <h2>Expense Breakdown</h2>
+                <span>{viewMode === "monthly" ? "Monthly View" : "Semester View"}</span>
+              </div>
+
+              <div className="chart-content">
+                <div className="fake-chart" style={chartStyle}>
+                  <div className="chart-hole">
+                    <span>
+                      {totalExpenses > 0
+                        ? `$${totalExpenses.toLocaleString()}`
+                        : "No Data"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="chart-labels">
+                  {activeExpenses.length === 0 ? (
+                    <p>No expenses added yet.</p>
+                  ) : (
+                    activeExpenses.map((expense, index) => {
+                      const percentage = ((expense.amount / totalExpenses) * 100).toFixed(1);
+
+                      return (
+                        <div key={index} className="chart-label-item">
+                          <div className="label-left">
+                            <span
+                              className="color-dot"
+                              style={{ backgroundColor: expense.color }}
+                            ></span>
+                            <span>{expense.name}</span>
+                          </div>
+                          <span>
+                            ${expense.amount} ({percentage}%)
+                          </span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              <br />
+
+              <button className="save-btn" onClick={handleSaveReport}>
+                Save Report
+              </button>
             </section>
           </>
         )}
 
         {activeTab === "resources" && <RowanResources />}
-
-        {activeTab === "reports" && <p>Reports coming soon</p>}
+        {activeTab === "reports" && <Reports user={user} />}
         {activeTab === "settings" && <p>Settings coming soon</p>}
         {activeTab === "accounts" && <p>Accounts coming soon</p>}
       </main>
@@ -267,6 +324,7 @@ function Dashboard({ user }) {
 
 function buildChartSegments(data, total) {
   let currentPercent = 0;
+
   return data
     .map((expense) => {
       const start = currentPercent;
