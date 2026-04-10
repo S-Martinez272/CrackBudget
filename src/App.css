@@ -434,3 +434,17 @@ body {
 .reports-table th {
   background-color: #dfe9d8;
 }
+
+.logout-btn {
+  background-color: #c0392b; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #e74c3c;
+}

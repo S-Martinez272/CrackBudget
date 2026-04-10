@@ -14,10 +14,16 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [showForgot, setShowForgot] = useState(false);
   const [showCreateAccount, setShowCreateAccount] = useState(false);
+  const [onLogout, setOnLogout] = useState(null);
   
+  const [currentview, setCurrentView] = useState("login");
+  const handleLoginSuccess = () => { setCurrentView("dashboard"); };
+  const handleLogout = () => { setCurrentView("login"); };
+
+
 
   if (loggedInUser) {
-    return <Dashboard user={loggedInUser} />;
+    return <Dashboard user={loggedInUser} onLogout={() => setLoggedInUser(null)} />;
   }
 
   if (showCreateAccount) {

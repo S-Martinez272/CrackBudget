@@ -1,11 +1,20 @@
+// Dashboard.jsx
+// Authors: Ellie, Sophia, Scout
+
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { auth } from "./firebase";
+import Settings from "./Settings";
 import RowanResources from "./RowanResources";
 import WhatIf from "./WhatIf";
 import Reports from "./reports";
+import { onLog } from "firebase/app";
 
-function Dashboard({ user }) {
+
+
+
+function Dashboard({ user, onLogout }) {
   const [viewMode, setViewMode] = useState("monthly");
 
   const [monthlyIncome, setMonthlyIncome] = useState("");
@@ -19,6 +28,8 @@ function Dashboard({ user }) {
   const [selectedView, setSelectedView] = useState("monthly");
 
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  const [InfoTab, setInfoTab] = useState(null);
 
   const activeExpenses =
     viewMode === "monthly" ? monthlyExpenses : semesterExpenses;
@@ -146,12 +157,7 @@ function Dashboard({ user }) {
             Settings
           </button>
 
-          <button
-            className={activeTab === "accounts" ? "nav-item active" : "nav-item"}
-            onClick={() => setActiveTab("accounts")}
-          >
-            All Accounts
-          </button>
+       
         </nav>
       </aside>
 
@@ -244,23 +250,57 @@ function Dashboard({ user }) {
               </div>
             </section>
 
-            <section className="summary-grid">
-              <div className="summary-card">
+            <div className="summary-card">
+              <div className="card-header">
                 <h3>Income</h3>
-                <p>${activeIncome.toLocaleString()}</p>
+                <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('income')}
+                  onMouseLeave={() => setShowInfoTab(null)} > 
+                  <button className="info-btn">i</button>
+                  {InfoTab === 'income' && (
+                    <div className="info-popup">Total income for the selected view.</div>
+                  )}
+              /</div> 
               </div>
+            <p>${activeIncome.toLocaleString()}</p>
+            </div>
+                
 
               <div className="summary-card">
+                <div className="card-header">
                 <h3>Expenses</h3>
+                  <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('expenses')}
+                  onMouseLeave={() => setShowInfoTab(null)} > 
+                  <button className="info-btn">i</button>
+                  {InfoTab === 'expenses' && (
+                    <div className="info-popup">Total expenses for the selected view.</div>
+                  )}
+
+                </div> 
+                </div>
                 <p>${totalExpenses.toLocaleString()}</p>
               </div>
 
               <div className="summary-card">
+                <div className="card-header">
                 <h3>Net</h3>
+                  <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('net')}
+                  onMouseLeave={() => setShowInfoTab(null)} > 
+                  <button className="info-btn">i</button>
+                  {InfoTab === 'net' && (
+                    <div className="info-popup">Net amount (Income - Expenses).</div>
+                  )}
+                  
+                /</div> 
+                </div>
                 <p>${net.toLocaleString()}</p>
               </div>
-            </section>
-
+            
             <section className="chart-card">
               <div className="chart-header">
                 <h2>Expense Breakdown</h2>
@@ -315,8 +355,7 @@ function Dashboard({ user }) {
 
         {activeTab === "resources" && <RowanResources />}
         {activeTab === "reports" && <Reports user={user} />}
-        {activeTab === "settings" && <p>Settings coming soon</p>}
-        {activeTab === "accounts" && <p>Accounts coming soon</p>}
+        {activeTab === "settings" && <Settings onLogout={onLogout} />}
       </main>
     </div>
   );
