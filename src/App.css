@@ -448,3 +448,20 @@ body {
 .logout-btn:hover {
   background-color: #e74c3c;
 }
+.whatif-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.whatif-baseline {
+  margin-top: 16px;
+  background: #f6f4ef;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.whatif-baseline p {
+  margin: 8px 0;
+}
+
