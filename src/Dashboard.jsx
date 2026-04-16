@@ -1,36 +1,35 @@
+// Dashboard.jsx
+// Authors: Ellie, Sophia, Scout
+
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { auth } from "./firebase";
 import Settings from "./Settings";
 import RowanResources from "./RowanResources";
 import WhatIf from "./WhatIf";
 import Reports from "./reports";
+import { onLog } from "firebase/app";
+
+
+
 
 function Dashboard({ user, onLogout }) {
-  // controls whether the dashboard is monthly or semester
   const [viewMode, setViewMode] = useState("monthly");
 
-  // income state
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [semesterIncome, setSemesterIncome] = useState("");
 
-  // expense lists
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
   const [semesterExpenses, setSemesterExpenses] = useState([]);
 
-  // add expense form
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedView, setSelectedView] = useState("monthly");
 
-  // sidebar tab control
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // info popup control
-  const [infoTab, setInfoTab] = useState(null);
-
-  // this stores the selected saved report so we can use it in the what-if tab
-  const [selectedReport, setSelectedReport] = useState(null);
+  const [InfoTab, setInfoTab] = useState(null);
 
   const activeExpenses =
     viewMode === "monthly" ? monthlyExpenses : semesterExpenses;
@@ -91,10 +90,10 @@ function Dashboard({ user, onLogout }) {
 
     try {
       await addDoc(collection(db, "users", user.uid, "reports"), {
-        viewMode,
+        viewMode: viewMode,
         income: activeIncome,
-        totalExpenses,
-        net,
+        totalExpenses: totalExpenses,
+        net: net,
         expenses: activeExpenses,
         createdAt: new Date(),
       });
@@ -131,6 +130,13 @@ function Dashboard({ user, onLogout }) {
           </button>
 
           <button
+            className={activeTab === "budget" ? "nav-item active" : "nav-item"}
+            onClick={() => setActiveTab("budget")}
+          >
+            Budget
+          </button>
+
+          <button
             className={activeTab === "resources" ? "nav-item active" : "nav-item"}
             onClick={() => setActiveTab("resources")}
           >
@@ -150,15 +156,15 @@ function Dashboard({ user, onLogout }) {
           >
             Settings
           </button>
+
+       
         </nav>
       </aside>
 
       <main className="dashboard-main">
-        {activeTab === "whatif" && (
-          <WhatIf user={user} selectedReport={selectedReport} />
-        )}
+        {activeTab === "whatif" && <WhatIf />}
 
-        {activeTab === "dashboard" && (
+        {(activeTab === "dashboard" || activeTab === "budget") && (
           <>
             <div className="dashboard-topbar">
               <div className="dashboard-header">
@@ -168,22 +174,13 @@ function Dashboard({ user, onLogout }) {
 
               <div className="toggle-group">
                 <button
-                  className={
-                    viewMode === "monthly"
-                      ? "toggle-btn active-toggle"
-                      : "toggle-btn"
-                  }
+                  className={viewMode === "monthly" ? "toggle-btn active-toggle" : "toggle-btn"}
                   onClick={() => setViewMode("monthly")}
                 >
                   Monthly
                 </button>
-
                 <button
-                  className={
-                    viewMode === "semester"
-                      ? "toggle-btn active-toggle"
-                      : "toggle-btn"
-                  }
+                  className={viewMode === "semester" ? "toggle-btn active-toggle" : "toggle-btn"}
                   onClick={() => setViewMode("semester")}
                 >
                   Semester
@@ -253,65 +250,57 @@ function Dashboard({ user, onLogout }) {
               </div>
             </section>
 
-            <section className="summary-grid">
-              <div className="summary-card">
-                <div className="card-header">
-                  <h3>Income</h3>
-                  <div
-                    className="info-tab"
-                    onMouseEnter={() => setInfoTab("income")}
-                    onMouseLeave={() => setInfoTab(null)}
-                  >
-                    <button className="info-btn">i</button>
-                    {infoTab === "income" && (
-                      <div className="info-popup">
-                        Total income for the selected view.
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <p>${activeIncome.toLocaleString()}</p>
+            <div className="summary-card">
+              <div className="card-header">
+                <h3>Income</h3>
+                <div
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('income')}
+                  onMouseLeave={() => setShowInfoTab(null)} > 
+                  <button className="info-btn">i</button>
+                  {InfoTab === 'income' && (
+                    <div className="info-popup">Total income for the selected view.</div>
+                  )}
+              /</div> 
               </div>
+            <p>${activeIncome.toLocaleString()}</p>
+            </div>
+                
 
               <div className="summary-card">
                 <div className="card-header">
-                  <h3>Expenses</h3>
+                <h3>Expenses</h3>
                   <div
-                    className="info-tab"
-                    onMouseEnter={() => setInfoTab("expenses")}
-                    onMouseLeave={() => setInfoTab(null)}
-                  >
-                    <button className="info-btn">i</button>
-                    {infoTab === "expenses" && (
-                      <div className="info-popup">
-                        Total expenses for the selected view.
-                      </div>
-                    )}
-                  </div>
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('expenses')}
+                  onMouseLeave={() => setShowInfoTab(null)} > 
+                  <button className="info-btn">i</button>
+                  {InfoTab === 'expenses' && (
+                    <div className="info-popup">Total expenses for the selected view.</div>
+                  )}
+
+                </div> 
                 </div>
                 <p>${totalExpenses.toLocaleString()}</p>
               </div>
 
               <div className="summary-card">
                 <div className="card-header">
-                  <h3>Net</h3>
+                <h3>Net</h3>
                   <div
-                    className="info-tab"
-                    onMouseEnter={() => setInfoTab("net")}
-                    onMouseLeave={() => setInfoTab(null)}
-                  >
-                    <button className="info-btn">i</button>
-                    {infoTab === "net" && (
-                      <div className="info-popup">
-                        Net amount after expenses are subtracted from income.
-                      </div>
-                    )}
-                  </div>
+                  className="info-tab"
+                  onMouseEnter={() => setInfoTab('net')}
+                  onMouseLeave={() => setShowInfoTab(null)} > 
+                  <button className="info-btn">i</button>
+                  {InfoTab === 'net' && (
+                    <div className="info-popup">Net amount (Income - Expenses).</div>
+                  )}
+                  
+                /</div> 
                 </div>
                 <p>${net.toLocaleString()}</p>
               </div>
-            </section>
-
+            
             <section className="chart-card">
               <div className="chart-header">
                 <h2>Expense Breakdown</h2>
@@ -334,10 +323,7 @@ function Dashboard({ user, onLogout }) {
                     <p>No expenses added yet.</p>
                   ) : (
                     activeExpenses.map((expense, index) => {
-                      const percentage = (
-                        (expense.amount / totalExpenses) *
-                        100
-                      ).toFixed(1);
+                      const percentage = ((expense.amount / totalExpenses) * 100).toFixed(1);
 
                       return (
                         <div key={index} className="chart-label-item">
@@ -368,17 +354,7 @@ function Dashboard({ user, onLogout }) {
         )}
 
         {activeTab === "resources" && <RowanResources />}
-
-        {activeTab === "reports" && (
-          <Reports
-            user={user}
-            onSelectReport={(report) => {
-              setSelectedReport(report);
-              setActiveTab("whatif");
-            }}
-          />
-        )}
-
+        {activeTab === "reports" && <Reports user={user} />}
         {activeTab === "settings" && <Settings onLogout={onLogout} />}
       </main>
     </div>
