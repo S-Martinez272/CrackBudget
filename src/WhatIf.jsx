@@ -288,4 +288,8 @@ function WhatIf({ user, selectedReport }) {
 }
 
 
+<<<<<<< HEAD
 export default WhatIf;
+=======
+export default WhatIf;
+>>>>>>> 8d8b7cceeb6f3934de50187d6dbca102ec9c4d91
