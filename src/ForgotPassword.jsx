@@ -1,18 +1,21 @@
-// src/ForgotPassword.js
-//need to fix and work on !!!
 import { useState } from "react";
 import { auth } from "./firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");  // Success message
-  const [error, setError] = useState("");      // Error message
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleReset = async (e) => {
     e.preventDefault();
     setMessage("");
     setError("");
+
+    if (!email) {
+      setError("Please enter your email.");
+      return;
+    }
 
     try {
       await sendPasswordResetEmail(auth, email);
@@ -23,26 +26,76 @@ function ForgotPassword() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "50px auto", textAlign: "center" }}>
-      <h2>Reset Password</h2>
+    <div
+      style={{
+        maxWidth: 420,
+        margin: "50px auto",
+        textAlign: "center",
+        padding: "20px",
+      }}
+    >
+      <h2 style={{ marginBottom: "20px" }}>Reset Password</h2>
+
       <form onSubmit={handleReset}>
         <input
           type="email"
           placeholder="Enter your registered email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", margin: "10px 0", padding: 8 }}
+          style={{
+            width: "100%",
+            margin: "10px 0",
+            padding: "12px",
+            borderRadius: "8px",
+            border: "1px solid #999",
+            boxSizing: "border-box",
+          }}
         />
-        <button type="submit" style={{ width: "100%", padding: 10 }}>
+
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "12px",
+            marginTop: "10px",
+            backgroundColor: "#1a1a1a",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        >
           Send Reset Email
         </button>
       </form>
 
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {message && (
+        <p style={{ color: "green", marginTop: "15px" }}>
+          {message}
+        </p>
+      )}
 
-      <p style={{ marginTop: 10 }}>
-        <Link to="/">Back to Login</Link>
+      {error && (
+        <p style={{ color: "red", marginTop: "15px" }}>
+          {error}
+        </p>
+      )}
+
+      <p style={{ marginTop: "15px" }}>
+        <button
+          type="button"
+          onClick={() => (window.location.href = "/")}
+          style={{
+            padding: "10px 16px",
+            backgroundColor: "#1a1a1a",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        >
+          Back to Login
+        </button>
       </p>
     </div>
   );

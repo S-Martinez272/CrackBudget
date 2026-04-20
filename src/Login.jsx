@@ -2,8 +2,7 @@ import { useState } from "react";
 import { auth } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-function Login({ onLoginSuccess, onForgotPassword }) { //added this so App can switch us to the dashboard after login :P
-
+function Login({ onLoginSuccess, onForgotPassword, onGoToCreateAccount }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,12 +10,10 @@ function Login({ onLoginSuccess, onForgotPassword }) { //added this so App can s
     e.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password); //logs user in and grabs their firebase account info
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
       alert("Login successful!");
-
       onLoginSuccess(userCredential.user);
-
     } catch (error) {
       alert(error.message);
     }
@@ -54,6 +51,14 @@ function Login({ onLoginSuccess, onForgotPassword }) { //added this so App can s
           className="forgot-button"
         >
           Forgot Password?
+        </button>
+
+        <button
+          type="button"
+          onClick={onGoToCreateAccount}
+          className="forgot-button"
+        >
+          Create Account
         </button>
       </div>
     </div>
