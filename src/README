@@ -5,18 +5,18 @@ Running the Rowan Budget Companion
 To run the app locally, follow these steps:
 
 Clone the repository
-**git clone https://github.com/S-Martinez272/CrackBudget
-**
+git clone https://github.com/S-Martinez272/CrackBudget
+
 cd CrackBudget
 
 Install dependencies
-**npm install
-**
+npm install
+
 Start the development server
-**npm run dev
-**
+npm run dev
+
 Then open your browser and go to:
-http://localhost:[the port number]/ 
+http://localhost:[port number]/ 
 
 # Firebase Setup
 
@@ -32,17 +32,15 @@ Firebase is used for:
 # Building the Project
 
 To create a production version of the app:
+npm run build 
 
-**npm run build 
-**
 This generates a dist folder that contains the final version of the app.
 
 # Deploying the App
 
 To deploy to Firebase Hosting:
+npx firebase-tools deploy --only hosting
 
-**npx firebase-tools deploy --only hosting
-**
 # Live Site
 
 The deployed version of Rowan Budget Companion can be accessed here:
