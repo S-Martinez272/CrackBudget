@@ -21,7 +21,6 @@ function WhatIf({ user, selectedReport }) {
   const [incomeChange, setIncomeChange] = useState("");
   const [expenseChange, setExpenseChange] = useState("");
   const [notes, setNotes] = useState("");
-
   const [loadingReports, setLoadingReports] = useState(true);
   const [savingScenario, setSavingScenario] = useState(false);
 
