@@ -400,7 +400,18 @@ function buildChartSegments(data, total) {
 }
 
 function getColor(category) {
-  const colors = ["#c97d3d", "#927700", "#ead7b1", "#6e9457"];
+  const colors = [
+    "#c97d3d",
+    "#927700",
+    "#ead7b1",
+    "#6e9457",
+    "#4f7cac",
+    "#b56576",
+    "#6d597a",
+    "#2a9d8f",
+    "#e76f51",
+    "#8ab17d"
+  ];
 
   let total = 0;
   for (let i = 0; i < category.length; i++) {
