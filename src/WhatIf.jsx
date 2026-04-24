@@ -24,7 +24,7 @@ function WhatIf({ user, selectedReport }) {
   const [loadingReports, setLoadingReports] = useState(true);
   const [savingScenario, setSavingScenario] = useState(false);
 
-  // load reports from firestore
+
   useEffect(() => {
     const loadReports = async () => {
       if (!user) {
@@ -60,7 +60,6 @@ function WhatIf({ user, selectedReport }) {
     loadReports();
   }, [user, selectedReport]);
 
-  // if a report gets passed from reports tab, use it automatically
   useEffect(() => {
     if (selectedReport?.id) {
       setSelectedReportId(selectedReport.id);
